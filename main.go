@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -10,12 +11,17 @@ import (
 func main() {
 	ewg := ewglib.NewExtendedWaitGroup()
 	for i := 0; i < 10; i++ {
-		ewg.Go(func() error {
-			time.Sleep(2 * time.Second)
+		i := i
+		ewg.Go(func(ctx context.Context) error {
+			fmt.Println(i)
+			time.Sleep(6 * time.Second)
 			return nil
 		})
 	}
-	err := ewg.Wait(1 * time.Second)
+	// time.AfterFunc(1*time.Second, func() {
+	// 	ewg.Cancel()
+	// })
+	err := ewg.Wait(4 * time.Second)
 	if err != nil {
 		fmt.Println("エラーが発生しました:", err)
 	} else {
